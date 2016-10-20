@@ -1,0 +1,59 @@
+//某同学在qq上提问  问题url 来自cnode 
+
+//链接：http://cnodejs.org/topic/580743a627a1d99178a98fc5
+
+1.求输出：
+([]+![])[+!![]]  //a
+2.求输出//评论里的问题 同计算了
+((-{})+[])[+![]]//N
+
+
+解析：
+//虽然平时没看到有这么用的 代码里这么写的要么是疯子 要么是奇葩。。
+
+看题目1 涉及到类型转换
+空数组 转换成 数字 对应的是 0
+空数组 转换成 布尔 对应的是 true
+。。。。
+任意值转换成数字的 隐式方法  -somevalue +somevalue（not somevalue+somevalue）
+其中 不可parseInt或者paresFloat的值会成为NaN
+
+所以题目1 转换
+[]+![]
+首先执行![]  转换成布尔值 false
+[]+布尔 统一变成 [].toString()+"false";
+[]对应字符串是“”
+所以变成false
+[+!![]]
+[] 对应的布尔值是 true 
+!是逻辑符号 非 所以![] ,[]转换成布尔值true，![] 就是false。
+!![]就是true。
++true 转换成数字 true对应数字1 
+题目一最后执行:("false")[1] 对应是输出a。
+
+然后就会很纠结一个问题
+[] 是神马情况
+[] 对应 true ？？
+[] 对应 0 
+wtf..
+var arr = [];
+//于是提问的人 又抛了一个问题。。。(后来发现是stackoverflow上的。。)
+console.log('Array:', arr);
+if (arr) console.log("It's true!");
+if (arr == false) console.log("It's false!");
+if (arr && arr == false) console.log("...what??");
+
+在进行转换过程 
+比如 目标类型是布尔  会进行Boolean(source);
+目标类型是 数字  会进行Number(source);
+object 类型会变成true
+至于数字
+建议阅读ES 规范  
+Number([]);
+Number([1]);
+Numeber([1,2]);
+Number({});传入object
+
+
+
+
