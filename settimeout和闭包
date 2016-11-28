@@ -1,0 +1,44 @@
+1.今天有人问的一道题
+var value1 = 0, value2 = 0, value3 = 0;
+for ( var i = 1; i <= 3; i++) {
+    var i2 = i;
+    (function() {
+        var i3 = i;
+        setTimeout(function() {
+            value1 += i;
+            value2 += i2;
+            value3 += i3;
+        }, 1);
+    })();
+}
+setTimeout(function() {
+    console.log(value1, value2, value3);
+}, 100);
+//求结果和why
+。。。。。。。
+你可以认为 settimeout是在额外的一个控制器里 不断的push进代码
+for里面加闭包  都知道闭包是立即执行 闭包作用域内 值都应该保持着当前执行循环的的值 比如i 应该分别为1,2,3 闭包完了就放掉  but  闭包里有settimeout
+settimeout里的都是push到额外的控制器里 这种情况下就是 当前轮执行完毕 释放cpu 然后遍历控制器 控制器push了三次settimeout的代码 开始执行 
+代码开始根据存储时候的作用域找变量的值。
+（模型参考event loop）--settimeout怎么保持作用域的==自行研究
+所以settimeout里的 值 i是循环执行后的i的终值   4
+i2 注意for到3的时候 i2=3；执行后i++；此时i=4，在判断i<=3循环结束
+所以
+i2最终值：3.
+value1 12
+value2 9
+最恶心的value3
+在闭包里做了这么一个操作
+var i3 = i;
+i3把值输出给了settimeout里后就释放掉了。
+第一次循环执行闭包的时候
+i3=1
+第二次 i3=2 第三次 i3=3；
+对应的对应的settimeout push代码的时候就相当于
+。。。
+value3+=1；
+。。。 
+value3+=2；
+。。。
+value3+=3；
+//不知道我说没说明白 反正问的人是懂了。
