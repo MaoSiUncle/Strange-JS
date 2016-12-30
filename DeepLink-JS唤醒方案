@@ -1,0 +1,52 @@
+1.关于js唤醒deeplink的解决方案--针对安卓机
+  第一种方式：通过window.location.href  
+  eg：
+  window.location.href='newsapp://';跳转到网易新闻
+  第二种方式：通过js创建iframe 指定iframe的src进行唤醒。
+  eg:
+    var r = e.createElement("iframe");
+    r.style.display = "none", r.src = 'newsapp://';
+    var a = e.body || e.getElementsByTagName("body")[0];
+    a.appendChild(r);
+    setTimeout(function () {
+        a.removeChild(r);
+        r = null;
+    }, 0);
+ 
+  第一种方式：
+  在用户已经安装app的情况下 对于绝大多数浏览器都适用。
+  在用户未安装app的情况下 部分浏览器 某些低版本的webkit内核会讲上述applink识别为一个http 进而跳转到错误页。
+  经实测：
+  Chrome Mobile在39版本以下会在直接跳转至错误页--而没有办法回来。
+  Chrome Mobile在39+版本中 不会跳转到错误页。
+  第二种方式：
+  在用户已经安装app的情况下，部分浏览器适用。
+  其实测试后 ChromeMobile及对应版本的webview 在44版本以下都不支持iframe唤醒
+  监测后发现浏览器会将其识别为一个get请求 在解析协议阶段就直接cancel掉了。
+  未安装浏览器的情况 
+  通常会在唤醒后加个定时器
+  逻辑是 唤醒app后 当前的浏览器切换到后台 js不会继续执行
+  如果未安装 则不会切换到后台 那么js定时器就会继续执行 发送唤醒失败请求或者跳转至下载链接。
+  eg：
+   var timer = setTimeout(function () {
+        if (Date.now() - openDate < 1600) {
+          //发送失败请求}
+    }, 1500);
+  
+  但是考虑到一个问题 应用在切换到后台之后其实并不都是直接挂起的 不同种应用的后台还有个常驻时间问题 如果当前浏览器切换至后台后 还会继续执行js的话上述
+  上述定时器代码是无用的。
+  为了更安全起见 借助了H5的visibilitychange和一个叫做pagehide的事件
+  eg：
+  var clearTimer = function () {
+        var tag = document.hidden || document.webkitHidden;
+        if (tag) {
+            clearTimeout(timer);
+        }
+    }
+    document.addEventListener("visibilitychange", clearTimer, true);
+    document.addEventListener("webkitvisibilitychange", clearTimer, true);
+    document.addEventListener("pagehide", function () {
+        clearTimeout(timer);
+    });
+    上述事件会在兼容相关api的浏览器进入后台时触发 清除定时器发送唤醒失败请求
+    
