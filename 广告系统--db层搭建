@@ -1,0 +1,68 @@
+有关与mysql交互的db层
+
+1.orm框架 sequelize model-first
+db层可以提出来一个数据会话层做接口。
+eg：
+
+const Sequelize = require('sequelize');
+const config = require('./config');
+
+
+const sequelize = new Sequelize(config.database, config.username, config.password, {
+  host: config.host,
+  dialect: 'mysql',
+  pool: {
+    max: 5,
+    min: 0,
+    idle: 10000,
+  },
+});
+function defineModel(name, attrs, ...cfg) {
+  let ocfg = {};
+  if (cfg.length > 0) {
+    ocfg = cfg[0];
+  }
+  ocfg.freezeTableName = true;
+  return sequelize.define(name, attrs, ocfg);
+}
+
+const TYPES = ['STRING', 'INTEGER', 'BIGINT', 'TEXT', 'DOUBLE', 'DATEONLY', 'BOOLEAN', 'DATE', 'FLOAT'];
+const exp = {
+  define: defineModel,
+  sync: () => {
+    sequelize.sync({ force: true });
+  },
+  query: (sql) => {
+    return sequelize.query(sql);
+  },
+};
+for (const i in TYPES) {
+  exp[TYPES[i]] = Sequelize[TYPES[i]];
+}
+module.exports = exp;
+====================================
+model层通过读取models文件夹下的东西读取相关 model进行操作： 自动化脚本
+const fs = require('fs');
+const db = require('./db');
+
+const files = fs.readdirSync(`${__dirname}/models`);
+
+const js_files = files.filter(f => f.endsWith('.js'), files);
+
+module.exports = {};
+for (const f of js_files) {
+  console.log(`import model from file ${f}...`);
+  const name = f.substring(0, f.length - 3);
+  console.log(name);
+  module.exports[name] = require(`${__dirname}/models/${f}`);
+}
+
+
+module.exports.sync = () => {
+  db.sync();
+};
+
+module.exports.query = (sql) => {
+  return db.query(sql);
+};
+
