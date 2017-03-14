@@ -1,0 +1,29 @@
+1.代码管理： git   --》 gitlab.com 做管理
+2.发布系统： fabric --》 一个自动远程执行shell的 （其实还是python的)
+3.部署工具：pm2 通过配置json即可
+
+eg: 期间包括常用环境变量
+{
+    "apps": [{
+        "name": "dev",
+        "script": "bin/www",
+        "instances": "max",
+        "exec_mode": "cluster",
+        "error_file": "/data/logs/dsp-admin-portal/dev/pm2-err.log",
+        "out_file": "/data/logs/dsp-admin-portal/dev/pm2-out.log",
+        "env": {
+          "redis": {
+            "host": "127.0.0.1",
+            "password": "",
+            "db": ""
+          },
+            "rds": {
+                "host": "",
+                "password": "",
+                "database": ""
+            },
+            "NODE_ENV": "development",
+            "PORT": "18081"
+        }
+  }]
+}
