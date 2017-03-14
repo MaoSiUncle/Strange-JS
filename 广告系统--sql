@@ -1,0 +1,2 @@
+1. mysql 根据 年月日聚合 
+SELECT DATE_FORMAT(timestamp,\'%Y-%m-%d %H:%i\') timestamps,sum(pv) pv,sum(uv) uv,sum(ip) ip,sum(pc) pc,sum(mobile) mobile FROM ad_pv GROUP BY timestamps
