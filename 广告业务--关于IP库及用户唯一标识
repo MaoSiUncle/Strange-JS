@@ -1,0 +1,14 @@
+其实大部分的解决办法都可以百度谷歌到。
+1.ipip.net  付费：800/月 免费的官网有个库 精确度 国 省 市  
+2.geoip 国外的库  geoip 版本1 对国内的ip是相当不精确的  只能支持到国家  官网出了geoip2  nodejs 支持 geoip-lite
+3.纯真库 国内很早就在民间从事ip收集的库 网友的力量是相当强的 这个库 格式不是规范 但是更新频率 是免费中最高的。
+4.淘宝，新浪等ip库，限制比较大 实时性 和数据量较大的情况 还是需要付费的。
+5.淘宝购买 基本有持续更新的才算正常。
+参考方案：
+1）基本上采用合并库进行计算：办法：  对于ipip.net的公开库 及 纯真的库  在计算后 进行相互补充对照 权重。
+用户唯一标识解决方案：
+1.种cookie，当然这个是不准的。
+2.浏览器端做fingerprint 指纹  fingerprint 已经更新到2了
+3.服务端对比维度 其实可以考虑 accept-header，ua，ip对应信息，等其他维度，进行hash计算。
+4.uuid.v1和v4 种植到cookie里。
+5.supercookie,evercookie，flash cookie等办法。参考express-fingerprint的做法。
