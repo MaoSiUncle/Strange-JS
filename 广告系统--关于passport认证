@@ -1,0 +1,24 @@
+passport：在express 
+  session 存储在
+  登录认证
+  app.use(session({
+  store: new RedisStore({
+    host: redisConfig.host,
+    port: 6379,
+    pass: redisConfig.password,
+    logsErrors: true,
+    db: redisConfig.db - 0,
+  }),
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 24 * 60 * 60 * 1000,
+  },
+}));
+
+添加中间件：
+app.use(passport.initialize());
+app.use(passport.session());
+注意添加顺序 express 4中默认有cookieParse 中间件添加一定要在这个之后。
+默认session存储在redis上。
