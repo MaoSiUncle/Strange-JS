@@ -1,0 +1,17 @@
+1.  广告代码插入通常会用document.write或者document.writeln 这样导致的问题是 大部分通过动态插入脚本的会导致write不能用
+原因是：document流已经关闭了 无法写入，大部分是写入一个script标签 所以可以通过钩子进行优化
+优化方式：将write换成appendChild或者 innerHTML+=html;
+if(document.head){
+        document.write=function(html){
+            if(/<script/.test(html)){
+                var src=html.match(/src=(.*?)\s/)[1];
+                var script=document.createElement('script');
+                script.src=src;
+                script.type = "text/javascript",
+                    document.body.insertBefore(script, document.body.children.item(0))
+            }else{
+                document.body.innerHTML+=html;
+            }
+        }
+    }
+    
