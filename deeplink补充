@@ -1,0 +1,7 @@
+由上文deeplink在浏览器里进行唤醒的说明，我们知道deeplink无非两种技术上的做法(虽然都是走网络请求)
+要么一个 0x0的iframe 将src设置成 deeplink ，要么一个 window.location.href 或者 a标签模拟点击
+单独论成功率来讲  window.location.href 无疑唤醒成功率更高一点，毕竟在广大流量里 ios下的 safari策略 是禁止iframe的。
+
+如何监控deeplink
+app真机就不说了，可以人肉看，可以监控机器等，可以做到监控 某些代码/网页是否做了deeplink很容易。
+一些测试框架 比如phantomjs，也可以做到，所有的deeplink走的都是网络协议，可以通过网络请求抓到对应地址。
