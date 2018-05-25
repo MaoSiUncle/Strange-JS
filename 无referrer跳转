@@ -1,0 +1,11 @@
+  function open_without_referrer(link){
+    var ifr = document.createElement('iframe');
+    ifr.style.display = 'none';
+    ifr.src = 'javascript:"<script>top.location.replace(\''+link+'\')<\/script>"';
+    document.body.appendChild(ifr);
+  }
+  open_without_referrer('http://localhost:3000/');
+  
+  原理 隐蔽的iframe 取top 进行跳转
+  而且没有办法回退。
+  请求header中无法捕获refer来源地址。
