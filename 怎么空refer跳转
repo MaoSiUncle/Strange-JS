@@ -1,0 +1,14 @@
+百度抓不到关键词 基本原理就是 点击百度某链接之后 跳转到一个中间页 中间页进行处理 然后在下一页追踪referrer的时候 发现指向的其实是中间页。
+
+借由此 我们可以讨论出一个 怎么做空referrer的 打开一个页面的办法
+大体思路一样：
+1.服务器redirect中间页 中间页跳转
+2.当前页 创建iframe  然后在iframe中进行 top.location.href 备注：iframe跟当前页是同域名 不同域名（可以试试能否 location.href ==）
+代码如下：
+function open_without_referrer(link){
+    var ifr = document.createElement('iframe');
+    ifr.style.display = 'none';
+    ifr.src = 'javascript:"<script>top.location.replace(\''+link+'\')<\/script>"';
+    document.body.appendChild(ifr);
+  }
+  open_without_referrer('http://localhost:3000/');
