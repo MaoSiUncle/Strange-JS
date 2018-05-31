@@ -1,0 +1,13 @@
+日前碰到一个问题 发现用 一个网站 的console 测试我的js代码时候 创建 的iframe script等标签 全都被干掉了
+查了一下 该网站代码 
+网站对 特定标签有 域名白名单
+于是就想到 其实 adblock的代码 也有做这方面的校验（请求地址里校验 是否包含 黑名单域名 或者是否在白名单里）
+
+1.请求越过adblock 其实主要在包含的问题 于是请求的时候 在请求地址里加上一个无用参数 参数值是当前域名就可以(当前域名肯定在白名单里，突破包含的逻辑)
+
+2.iframe 会校验src的问题
+知识点： iframe 内部跳转 不会改变 创建时候 iframe的src属性
+所以  创建个当前域名的iframe 内部代码 
+ifr.src = '#';(锚点同当前域名) 
+ifr.contentWindow.document.write() 
+写入 一个 window.location.href = 'your url'
