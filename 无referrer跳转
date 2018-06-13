@@ -6,6 +6,6 @@
   }
   open_without_referrer('http://localhost:3000/');
   
-  原理 隐蔽的iframe 取top 进行跳转
+  原理 隐蔽的iframe 取top 进行跳转(注意 在src里写js 会屏蔽掉iframe本身带的域)
   而且没有办法回退。
   请求header中无法捕获refer来源地址。
